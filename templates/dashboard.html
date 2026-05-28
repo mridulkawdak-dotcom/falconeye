@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FalconEye Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial;
+            background: #0f172a;
+            color: white;
+            text-align: center;
+        }
+        canvas {
+            max-width: 600px;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+
+<h1>FalconEye Dashboard</h1>
+
+<h3>Total Attacks</h3>
+<p id="total"></p>
+
+<canvas id="attackChart"></canvas>
+
+<script>
+fetch('/api/logs')
+.then(res => res.json())
+.then(data => {
+    let logs = data.logs;
+
+    document.getElementById("total").innerText = logs.length;
+
+    let types = {};
+
+    logs.forEach(log => {
+        log.attack_type.forEach(type => {
+            types[type] = (types[type] || 0) + 1;
+        });
+    });
+
+    const ctx = document.getElementById('attackChart');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(types),
+            datasets: [{
+                label: 'Attack Types',
+                data: Object.values(types)
+            }]
+        }
+    });
+});
+</script>
+
+</body>
+</html>

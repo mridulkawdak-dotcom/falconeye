@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>OTP Verification</title>
+
+    <style>
+
+        body{
+            background:#0f172a;
+            color:white;
+            font-family:Arial;
+        }
+
+        .box{
+
+            width:350px;
+            margin:120px auto;
+            background:#1e293b;
+            padding:30px;
+            border-radius:10px;
+            text-align:center;
+        }
+
+        input{
+
+            width:100%;
+            padding:12px;
+            margin-top:15px;
+            border:none;
+            border-radius:5px;
+        }
+
+        button{
+
+            width:100%;
+            padding:12px;
+            margin-top:20px;
+            background:#2563eb;
+            color:white;
+            border:none;
+            border-radius:5px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="box">
+
+    <h2>Two-Factor Authentication</h2>
+
+    <p>
+        Enter the OTP sent to your registered mobile number.
+    </p>
+
+    <form action="/dashboard_page">
+
+        <input type="text"
+               placeholder="Enter OTP"
+               required>
+
+        <button type="submit">
+            Verify
+        </button>
+
+    </form>
+
+</div>
+
+</body>
+
+</html>
