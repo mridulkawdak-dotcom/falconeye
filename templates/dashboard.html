@@ -3,87 +3,42 @@
 
 <head>
 
-    <title>FalconEye Live Dashboard</title>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>FalconEye Dashboard</title>
 
     <style>
 
         body{
-            margin:0;
-            padding:0;
             background:#0f172a;
             color:white;
             font-family:Arial;
+            margin:0;
+            padding:0;
         }
 
         header{
-
             background:#1e293b;
             padding:20px;
             text-align:center;
             font-size:30px;
         }
 
-        .stats{
-
-            display:flex;
-            justify-content:center;
-            gap:20px;
+        .container{
+            width:90%;
+            margin:auto;
             margin-top:20px;
-            flex-wrap:wrap;
         }
 
         .card{
 
             background:#1e293b;
             padding:20px;
-            width:250px;
             border-radius:10px;
-            text-align:center;
-        }
-
-        .value{
-
-            font-size:35px;
-            color:#4ade80;
-            margin-top:10px;
-        }
-
-        canvas{
-
-            background:white;
-            border-radius:10px;
-            margin:30px auto;
-            display:block;
-            width:80% !important;
-            max-width:700px;
-        }
-
-        .feed{
-
-            width:90%;
-            margin:30px auto;
-            background:#1e293b;
-            padding:20px;
-            border-radius:10px;
+            margin-bottom:20px;
         }
 
         .attack{
-
             border-bottom:1px solid #334155;
-            padding:15px;
-            text-align:left;
-        }
-
-        .riskHigh{
-            color:#ef4444;
-            font-weight:bold;
-        }
-
-        .riskLow{
-            color:#4ade80;
-            font-weight:bold;
+            padding:10px;
         }
 
     </style>
@@ -93,156 +48,55 @@
 <body>
 
 <header>
-    FalconEye Real-Time Threat Dashboard
+    FalconEye Threat Dashboard
 </header>
 
-<div class="stats">
+<div class="container">
 
     <div class="card">
 
-        <h2>Total Attacks</h2>
+        <h2>Recent Attacks</h2>
 
-        <div class="value" id="totalAttacks">
-            0
-        </div>
-
-    </div>
-
-    <div class="card">
-
-        <h2>High Risk Attacks</h2>
-
-        <div class="value" id="highRisk">
-            0
-        </div>
-
-    </div>
-
-</div>
-
-<canvas id="attackChart"></canvas>
-
-<div class="feed">
-
-    <h2>Live Attack Feed</h2>
-
-    <div id="liveFeed"></div>
-
-</div>
-
-<script>
-
-let chart;
-
-async function loadDashboard(){
-
-    const response = await fetch('/api/logs');
-
-    const data = await response.json();
-
-    const logs = data.logs;
-
-    // Total attacks
-    document.getElementById("totalAttacks").innerText = logs.length;
-
-    // High risk attacks
-    let highRisk = logs.filter(
-        log => log.risk_score >= 60
-    ).length;
-
-    document.getElementById("highRisk").innerText = highRisk;
-
-    // Attack type count
-    let types = {};
-
-    logs.forEach(log => {
-
-        if(log.attack_type.length === 0){
-
-            types["Normal Login"] = (types["Normal Login"] || 0) + 1;
-
-        }
-
-        log.attack_type.forEach(type => {
-
-            types[type] = (types[type] || 0) + 1;
-
-        });
-
-    });
-
-    // Chart
-    const ctx = document.getElementById('attackChart');
-
-    if(chart){
-        chart.destroy();
-    }
-
-    chart = new Chart(ctx, {
-
-        type: 'bar',
-
-        data: {
-
-            labels: Object.keys(types),
-
-            datasets: [{
-
-                label: 'Attack Types',
-
-                data: Object.values(types)
-
-            }]
-        }
-    });
-
-    // Live feed
-    let feed = "";
-
-    logs.reverse().slice(0,10).forEach(log => {
-
-        let riskClass = log.risk_score >= 60
-            ? "riskHigh"
-            : "riskLow";
-
-        feed += `
+        {% for log in logs %}
 
         <div class="attack">
 
-            <strong>IP:</strong> ${log.ip} <br>
+            <strong>IP:</strong>
+            {{ log.ip }}
 
-            <strong>Attack Type:</strong> ${log.attack_type} <br>
+            <br>
 
-            <strong class="${riskClass}">
-                Risk Score: ${log.risk_score}
-            </strong>
+            <strong>Attack:</strong>
+            {{ log.attack_type }}
+
+            <br>
+
+            <strong>Risk:</strong>
+            {{ log.risk_score }}
+
             <br>
 
             <strong>Country:</strong>
-            ${log.location?.country || "Unknown"} <br>
+            {{ log.location.country }}
+
+            <br>
 
             <strong>City:</strong>
-            ${log.location?.city || "Unknown"} <br>
+            {{ log.location.city }}
+
+            <br>
 
             <strong>ISP:</strong>
-            ${log.location?.isp || "Unknown"}
+            {{ log.location.isp }}
 
         </div>
 
-        `;
-    });
+        {% endfor %}
 
-    document.getElementById("liveFeed").innerHTML = feed;
-}
+    </div>
 
-// Auto refresh every 5 seconds
-setInterval(loadDashboard, 5000);
-
-loadDashboard();
-
-</script>
+</div>
 
 </body>
 
 </html>
-
