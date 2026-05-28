@@ -17,8 +17,7 @@ app = Flask(__name__)
 
 client = MongoClient(
     os.getenv("MONGO_URI"),
-    tls=True,
-    tlsAllowInvalidCertificates=True
+    serverSelectionTimeoutMS=5000
 )
 
 db = client.falconeye
@@ -229,9 +228,15 @@ def login():
 
     # ---------------- EMAIL ALERT ---------------- #
 
-    if risk >= 60:
+    try:
 
-        send_alert(ip, attack_type, risk)
+    # send_alert(ip, attack_type, risk)
+
+      pass
+
+    except Exception as e:
+
+      print("Email Failed:", e)
 
     # ---------------- SAVE TO DATABASE ---------------- #
 
@@ -295,7 +300,6 @@ def dashboard():
 if __name__ == "__main__":
 
     app.run(
-        debug=True,
         host="0.0.0.0",
         port=5001
     )
