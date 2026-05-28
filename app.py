@@ -2,6 +2,7 @@ from flask import Flask, request, render_template
 from datetime import datetime
 from pymongo import MongoClient
 from dotenv import load_dotenv
+import certifi
 import os
 import requests
 import smtplib
@@ -16,8 +17,19 @@ app = Flask(__name__)
 # ---------------- DATABASE ---------------- #
 
 client = MongoClient(
+
     os.getenv("MONGO_URI"),
-    serverSelectionTimeoutMS=5000
+
+    tlsCAFile=certifi.where(),
+
+    serverSelectionTimeoutMS=30000,
+
+    connectTimeoutMS=30000,
+
+    socketTimeoutMS=30000,
+
+    retryWrites=True
+
 )
 
 db = client.falconeye
