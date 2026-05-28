@@ -1,3 +1,4 @@
+from flask import redirect
 from flask import Flask, request, render_template
 from pymongo import MongoClient
 from datetime import datetime
@@ -153,7 +154,7 @@ def login():
 
     print("Attack Saved!")
 
-    return render_template("otp.html")
+    return redirect("/dashboard")
 
 # ---------------- RUN ---------------- #
 
