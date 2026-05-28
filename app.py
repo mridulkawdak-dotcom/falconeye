@@ -2,8 +2,6 @@ from flask import Flask, request, render_template
 from pymongo import MongoClient
 from datetime import datetime
 import requests
-import smtplib
-from email.mime.text import MIMEText
 import os
 from dotenv import load_dotenv
 import certifi
@@ -81,55 +79,7 @@ def get_location(ip):
             "isp": "Unknown"
         }
 
-# ---------------- EMAIL ALERT ---------------- #
 
-def send_alert(ip, attack_type):
-
-    try:
-
-        sender = os.getenv("EMAIL_USER")
-
-        password = os.getenv("EMAIL_PASS")
-
-        receiver = os.getenv("EMAIL_USER")
-
-        message = f"""
-FalconEye Security Alert
-
-Attack Detected!
-
-IP Address: {ip}
-
-Attack Type: {attack_type}
-"""
-
-        msg = MIMEText(message)
-
-        msg['Subject'] = "FalconEye Alert"
-
-        msg['From'] = sender
-
-        msg['To'] = receiver
-
-        server = smtplib.SMTP("smtp.gmail.com", 587)
-
-        server.starttls()
-
-        server.login(sender, password)
-
-        server.sendmail(
-            sender,
-            receiver,
-            msg.as_string()
-        )
-
-        server.quit()
-
-        print("Email Alert Sent!")
-
-    except Exception as e:
-
-        print("Email Error:", e)
 
 # ---------------- ROUTES ---------------- #
 
@@ -175,11 +125,11 @@ def login():
     # SQL Injection Detection
     if detect_sqli(username) or detect_sqli(password):
 
-        attack_type.append("SQL Injection")
+        print(f"ALERT: SQL Injection from {ip}")
 
         risk_score = 60
 
-        send_alert(ip, attack_type)
+       
 
     log = {
 
