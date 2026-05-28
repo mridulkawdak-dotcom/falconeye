@@ -116,7 +116,10 @@ def get_location(ip):
 def send_alert(ip, attack_type, risk):
 
     sender = os.getenv("EMAIL_USER")
+
     password = os.getenv("EMAIL_PASS")
+
+    receiver = os.getenv("EMAIL_USER")
 
     message = f"""
 FalconEye Threat Alert
@@ -126,13 +129,17 @@ IP Address: {ip}
 Attack Type: {attack_type}
 
 Risk Score: {risk}
+
+Immediate attention required.
 """
 
     msg = MIMEText(message)
 
     msg['Subject'] = "FalconEye Security Alert"
+
     msg['From'] = sender
-    msg['To'] = sender
+
+    msg['To'] = receiver
 
     try:
 
@@ -144,7 +151,7 @@ Risk Score: {risk}
 
         server.sendmail(
             sender,
-            sender,
+            receiver,
             msg.as_string()
         )
 
@@ -242,9 +249,9 @@ def login():
 
     try:
 
-    # send_alert(ip, attack_type, risk)
+     if risk >= 60:
 
-      pass
+        send_alert(ip, attack_type, risk)
 
     except Exception as e:
 
