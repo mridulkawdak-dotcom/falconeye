@@ -97,9 +97,39 @@ def login_page():
 @app.route('/dashboard')
 def dashboard():
 
-    logs = list(
-        collection.find().sort("timestamp", -1).limit(10)
-    )
+    try:
+
+        logs = list(
+
+            collection.find(
+
+                {},
+
+                {
+
+                    "_id": 0,
+
+                    "ip": 1,
+
+                    "username": 1,
+
+                    "attack_type": 1,
+
+                    "risk_score": 1,
+
+                    "location": 1
+
+                }
+
+            ).limit(5)
+
+        )
+
+    except Exception as e:
+
+        print("Dashboard Error:", e)
+
+        logs = []
 
     return render_template(
         "dashboard.html",
