@@ -1,3 +1,4 @@
+```html id="6h9tqv"
 <!DOCTYPE html>
 <html>
 
@@ -62,32 +63,44 @@
         <div class="attack">
 
             <strong>IP:</strong>
-            {{ log.ip }}
 
-            <br>
+            {{ log.get('ip', 'Unknown') }}
 
-            <strong>Attack:</strong>
-            {{ ", ".join(log.attack_type) }}
+            <br><br>
 
-            <br>
+            <strong>Username:</strong>
 
-            <strong>Risk:</strong>
-            {{ log.risk_score }}
+            {{ log.get('username', 'Unknown') }}
 
-            <br>
+            <br><br>
+
+            <strong>Attack Type:</strong>
+
+            {{ ", ".join(log.get('attack_type', [])) }}
+
+            <br><br>
+
+            <strong>Risk Score:</strong>
+
+            {{ log.get('risk_score', 0) }}
+
+            <br><br>
 
             <strong>Country:</strong>
-            {{ log.location.country }}
 
-            <br>
+            {{ log.get('location', {}).get('country', 'Unknown') }}
+
+            <br><br>
 
             <strong>City:</strong>
-            {{ log.location.city }}
 
-            <br>
+            {{ log.get('location', {}).get('city', 'Unknown') }}
+
+            <br><br>
 
             <strong>ISP:</strong>
-            {{ log.location.isp }}
+
+            {{ log.get('location', {}).get('isp', 'Unknown') }}
 
         </div>
 
@@ -100,3 +113,5 @@
 </body>
 
 </html>
+```
+
